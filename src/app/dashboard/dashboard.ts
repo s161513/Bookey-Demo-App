@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { MessageDetailComponent, MessageDetail, AiAnswer } from './message-detail/message-detail';
 
 export interface Message {
@@ -21,49 +22,44 @@ export interface Message {
   standalone: true,
   imports: [CommonModule, FormsModule, MessageDetailComponent],
   templateUrl: './dashboard.html',
-  styleUrl: './dashboard.css'
+  styleUrl: './dashboard.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   selectedMessage: MessageDetail | null = null;
-
-  messages: Message[] = [
-    {
-      id: '1',
-      senderName: 'Jan Vermeulen',
-      senderEmail: 'jan@example.nl',
-      avatarGradient: 'linear-gradient(135deg, #c4a0ff 0%, #e6ccff 100%)',
-      avatarText: 'JV',
-      messageText: 'Hallo, ik heb een vraag over jullie diensten. Ik ben geïnteresseerd in een offerte voor een website voor mijn bedrijf. Kunnen jullie contact met mij opnemen?',
-      status: 'Nieuw',
-      time: '18s',
-      date: '15 dagen geleden'
-    },
-    {
-      id: '2',
-      senderName: 'Sophie de Vries',
-      senderEmail: 'sophie@bedrijf.nl',
-      avatarGradient: 'linear-gradient(135deg, #a8d8ff 0%, #d4e8ff 100%)',
-      avatarText: 'SV',
-      messageText: 'Goedemiddag, ik zou graag meer informatie willen ontvangen over jullie prijzen en pakketten. Werken jullie ook met maandelijkse betalingen?',
-      status: 'Nieuw',
-      time: '15 dagen',
-      date: '15 dagen geleden'
-    },
-    {
-      id: '3',
-      senderName: 'Peter Janssen',
-      senderEmail: 'p.janssen@mail.com',
-      avatarGradient: 'linear-gradient(135deg, #c4a0ff 0%, #e6ccff 100%)',
-      avatarText: 'PJ',
-      messageText: 'Ik heb vorige week een aanvraag gedaan maar nog geen reactie ontvangen. Wanneer kan ik een terugkoppeling verwachten? Het is nogal urgent voor ons.',
-      status: 'Gelezen',
-      time: '16 dagen',
-      date: '16 dagen geleden'
-    }
-  ];
-
+  messages: Message[] = [];
+  filteredMessages: Message[] = [];
   searchQuery: string = '';
   filterOption: string = 'Alle berichten';
+
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
+
+  ngOnInit(): void {
+    this.loadMessages();
+  }
+
+  loadMessages(): void {
+    console.log('Loading messages...');
+    this.http.get<Message[]>('/assets/messages.json').subscribe(
+      (data: Message[]) => {
+        console.log('Messages loaded successfully:', data);
+        this.messages = data;
+        this.updateFilteredMessages();
+        this.cdr.markForCheck();
+        console.log('Messages array:', this.messages);
+      },
+      (error: any) => {
+        console.error('Error loading messages:', error);
+      }
+    );
+  }
+
+  updateFilteredMessages(): void {
+    console.log('updateFilteredMessages called');
+    console.log('messages.length:', this.messages.length);
+    this.filteredMessages = this.getFilteredMessages();
+    console.log('filteredMessages.length:', this.filteredMessages.length);
+  }
 
   getFilteredMessages(): Message[] {
     let filtered = this.messages;
@@ -90,10 +86,12 @@ export class DashboardComponent {
 
   onSearchChange(query: string): void {
     this.searchQuery = query;
+    this.updateFilteredMessages();
   }
 
   onFilterChange(option: string): void {
     this.filterOption = option;
+    this.updateFilteredMessages();
   }
 
   onMessageClick(message: Message): void {

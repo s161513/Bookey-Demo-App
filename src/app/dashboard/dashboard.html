@@ -68,7 +68,7 @@
       <div class="messages-container">
         <div
           class="message-item"
-          *ngFor="let msg of getFilteredMessages()"
+          *ngFor="let msg of filteredMessages"
           (click)="onMessageClick(msg)">
           <div class="message-avatar" [style.background]="msg.avatarGradient">
             <span class="avatar-text">{{ msg.avatarText }}</span>

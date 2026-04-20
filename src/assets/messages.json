@@ -1,0 +1,36 @@
+[
+  {
+    "id": "1",
+    "senderName": "Jan Vermeulen",
+    "senderEmail": "jan@example.nl",
+    "avatarGradient": "linear-gradient(135deg, #c4a0ff 0%, #e6ccff 100%)",
+    "avatarText": "JV",
+    "messageText": "Kan ik een afspraak maken morgen om 14u?",
+    "status": "Nieuw",
+    "time": "18s",
+    "date": "15 dagen geleden"
+  },
+  {
+    "id": "2",
+    "senderName": "Sophie de Vries",
+    "senderEmail": "sophie@bedrijf.nl",
+    "avatarGradient": "linear-gradient(135deg, #a8d8ff 0%, #d4e8ff 100%)",
+    "avatarText": "SV",
+    "messageText": "Hoeveel kost een knipbeurt bij jullie?",
+    "status": "Nieuw",
+    "time": "15 dagen",
+    "date": "15 dagen geleden"
+  },
+  {
+    "id": "3",
+    "senderName": "Peter Janssen",
+    "senderEmail": "p.janssen@mail.com",
+    "avatarGradient": "linear-gradient(135deg, #c4a0ff 0%, #e6ccff 100%)",
+    "avatarText": "PJ",
+    "messageText": "Kan ik zometeen langskomen?",
+    "status": "Gelezen",
+    "time": "16 dagen",
+    "date": "16 dagen geleden"
+  }
+]
+
