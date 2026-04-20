@@ -76,6 +76,13 @@ export class MessageDetailComponent {
       event.stopPropagation();
     }
     this.replyText = answerText;
+    this.selectedAiAnswerText = null;
+  }
+
+  onReplyTextChange(): void {
+    if (this.replyText.trim()) {
+      this.selectedAiAnswerText = null;
+    }
   }
 
   selectAiAnswer(answerText: string): void {

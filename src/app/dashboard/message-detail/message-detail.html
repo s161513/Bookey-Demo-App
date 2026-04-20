@@ -83,6 +83,7 @@
       <textarea
         class="reply-textarea"
         [(ngModel)]="replyText"
+        (input)="onReplyTextChange()"
         placeholder="Typ hier uw eigen antwoord of bewerk een AI-suggestie..."
         (keydown.enter)="onKeyDownEnter($event)">
       </textarea>

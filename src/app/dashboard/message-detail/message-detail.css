@@ -213,14 +213,19 @@
 }
 
 .ai-answer:hover {
-  border-color: #0066ff;
-  background: #f0f7ff;
+  border-color: #10b981;
+  background: #d1fae5;
 }
 
 .ai-answer.selected {
-  border-color: #0066ff;
-  background: #e3f2fd;
-  box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+  border-color: #10b981;
+  background: #d1fae5;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.ai-answer.selected .ai-checkmark {
+  background: #10b981;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
 }
 
 .ai-checkmark {
