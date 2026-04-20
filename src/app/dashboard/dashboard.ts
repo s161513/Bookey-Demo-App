@@ -11,6 +11,7 @@ export interface Message {
   avatarGradient: string;
   avatarText: string;
   messageText: string;
+  messageType: 'Spraakbericht' | 'Tekstbericht';
   status: 'Nieuw' | 'Gelezen';
   time: string;
   date: string;
@@ -97,11 +98,11 @@ export class DashboardComponent implements OnInit {
   onMessageClick(message: Message): void {
     const aiAnswers: AiAnswer[] = [
       {
-        text: 'Placeholder',
+        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dignissim leo ex, at facilisis magna dignissim sed. Mauris dui urna.',
         tag: 'Informeel'
       },
       {
-        text: 'Placeholder',
+        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vitae nisi a diam finibus malesuada nec ac dui. Vestibulum tempor.',
         tag: 'Professioneel'
       }
     ];
@@ -113,7 +114,7 @@ export class DashboardComponent implements OnInit {
       avatarGradient: message.avatarGradient,
       avatarText: message.avatarText,
       messageText: message.messageText,
-      messageType: 'Spraakbericht',
+      messageType: message.messageType,
       time: message.time,
       date: message.date,
       timestamp: `18 seconden  17 mrt. 2026, 10:30:00`,

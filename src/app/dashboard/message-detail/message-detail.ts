@@ -9,7 +9,7 @@ export interface MessageDetail {
   avatarGradient: string;
   avatarText: string;
   messageText: string;
-  messageType: 'Spraakbericht' | 'Normaal';
+  messageType: 'Spraakbericht' | 'Tekstbericht';
   time: string;
   date: string;
   timestamp: string;
@@ -66,5 +66,9 @@ export class MessageDetailComponent {
       event.preventDefault();
       this.onSendReply();
     }
+  }
+
+  useAiAnswer(answerText: string): void {
+    this.replyText = answerText;
   }
 }

@@ -35,10 +35,14 @@
     <div class="message-sections">
       <!-- Report section (Bericht) -->
       <div class="message-section ai-section">
-          <div class="section-header">
-            <i class="fas fa-comment section-icon"></i>
-            <span class="section-title">Bericht</span>
-          </div>
+        <div class="section-header">
+          <i class="fas fa-comment section-icon"></i>
+          <span class="section-title">Bericht</span>
+          <span class="transcription-badge" *ngIf="message.messageType === 'Spraakbericht'">
+            <i class="fas fa-microphone"></i>
+            Getranscribeerd
+          </span>
+        </div>
         <div class="section-content">
           {{ message.messageText }}
         </div>
@@ -56,6 +60,9 @@
               <span class="ai-tag" *ngIf="answer.tag">{{ answer.tag }}</span>
               <div class="ai-text">{{ answer.text }}</div>
             </div>
+            <button class="ai-use-btn" (click)="useAiAnswer(answer.text)" title="Voeg dit antwoord toe aan je reply">
+              <i class="fas fa-arrow-down"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -71,7 +78,7 @@
       <textarea
         class="reply-textarea"
         [(ngModel)]="replyText"
-        placeholder="Typ hier uw eigen antwoord of bwerk een AI-suggestie..."
+        placeholder="Typ hier uw eigen antwoord of bewerk een AI-suggestie..."
         (keydown.enter)="onKeyDownEnter($event)">
       </textarea>
 
