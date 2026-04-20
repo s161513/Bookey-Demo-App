@@ -44,15 +44,18 @@ export class MessageDetailComponent {
   @Output() sendReply = new EventEmitter<string>();
 
   replyText: string = '';
+  selectedAiAnswerText: string | null = null;
 
   onBackClick(): void {
     this.backClick.emit();
   }
 
   onSendReply(): void {
-    if (this.replyText.trim()) {
-      this.sendReply.emit(this.replyText);
+    const textToSend = this.replyText.trim() || this.selectedAiAnswerText;
+    if (textToSend) {
+      this.sendReply.emit(textToSend);
       this.replyText = '';
+      this.selectedAiAnswerText = null;
     }
   }
 
@@ -68,7 +71,14 @@ export class MessageDetailComponent {
     }
   }
 
-  useAiAnswer(answerText: string): void {
+  useAiAnswer(answerText: string, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
     this.replyText = answerText;
+  }
+
+  selectAiAnswer(answerText: string): void {
+    this.selectedAiAnswerText = answerText;
   }
 }
