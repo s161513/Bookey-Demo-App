@@ -1,143 +1,135 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MessageDetailComponent, MessageDetail, AiAnswer } from './message-detail/message-detail';
 
-type Kpi = {
-  label: string;
-  value: string;
-  deltaLabel: string;
-  deltaType: 'up' | 'down' | 'neutral';
-};
-
-type Ticket = {
+export interface Message {
   id: string;
-  subject: string;
-  customer: string;
-  status: 'Open' | 'In behandeling' | 'Wacht op klant' | 'Gesloten';
-  priority: 'Laag' | 'Normaal' | 'Hoog';
-  updatedAt: string;
-};
-
-type AiAnswer = {
-  question: string;
-  answer: string;
-  sources: string[];
-};
+  senderName: string;
+  senderEmail: string;
+  avatarGradient: string;
+  avatarText: string;
+  messageText: string;
+  status: 'Nieuw' | 'Gelezen';
+  time: string;
+  date: string;
+  icon?: string;
+}
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, FormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule, MessageDetailComponent],
   templateUrl: './dashboard.html',
-  styleUrl: './dashboard.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrl: './dashboard.css'
 })
 export class DashboardComponent {
-  protected readonly companyName = 'Bookey BV';
+  selectedMessage: MessageDetail | null = null;
 
-  protected readonly kpis: Kpi[] = [
+  messages: Message[] = [
     {
-      label: 'Omzet (MTD)',
-      value: '€ 128.430',
-      deltaLabel: '+8,2% vs vorige maand',
-      deltaType: 'up'
+      id: '1',
+      senderName: 'Jan Vermeulen',
+      senderEmail: 'jan@example.nl',
+      avatarGradient: 'linear-gradient(135deg, #c4a0ff 0%, #e6ccff 100%)',
+      avatarText: 'JV',
+      messageText: 'Hallo, ik heb een vraag over jullie diensten. Ik ben geïnteresseerd in een offerte voor een website voor mijn bedrijf. Kunnen jullie contact met mij opnemen?',
+      status: 'Nieuw',
+      time: '18s',
+      date: '15 dagen geleden'
     },
     {
-      label: 'Nieuwe leads',
-      value: '342',
-      deltaLabel: '-3,1% vs vorige maand',
-      deltaType: 'down'
+      id: '2',
+      senderName: 'Sophie de Vries',
+      senderEmail: 'sophie@bedrijf.nl',
+      avatarGradient: 'linear-gradient(135deg, #a8d8ff 0%, #d4e8ff 100%)',
+      avatarText: 'SV',
+      messageText: 'Goedemiddag, ik zou graag meer informatie willen ontvangen over jullie prijzen en pakketten. Werken jullie ook met maandelijkse betalingen?',
+      status: 'Nieuw',
+      time: '15 dagen',
+      date: '15 dagen geleden'
     },
     {
-      label: 'Actieve klanten',
-      value: '1.284',
-      deltaLabel: '+1,4% vs vorige maand',
-      deltaType: 'up'
-    },
-    {
-      label: 'Support SLA',
-      value: '97,6%',
-      deltaLabel: 'stabiel',
-      deltaType: 'neutral'
+      id: '3',
+      senderName: 'Peter Janssen',
+      senderEmail: 'p.janssen@mail.com',
+      avatarGradient: 'linear-gradient(135deg, #c4a0ff 0%, #e6ccff 100%)',
+      avatarText: 'PJ',
+      messageText: 'Ik heb vorige week een aanvraag gedaan maar nog geen reactie ontvangen. Wanneer kan ik een terugkoppeling verwachten? Het is nogal urgent voor ons.',
+      status: 'Gelezen',
+      time: '16 dagen',
+      date: '16 dagen geleden'
     }
   ];
 
-  protected readonly tickets = signal<Ticket[]>([
-    {
-      id: 'TCK-1048',
-      subject: 'Factuur komt dubbel binnen',
-      customer: 'Van Dijk Transport',
-      status: 'In behandeling',
-      priority: 'Hoog',
-      updatedAt: 'Vandaag 10:12'
-    },
-    {
-      id: 'TCK-1042',
-      subject: 'Inloggen lukt niet met SSO',
-      customer: 'Koster & Zn.',
-      status: 'Open',
-      priority: 'Normaal',
-      updatedAt: 'Gisteren 16:50'
-    },
-    {
-      id: 'TCK-1039',
-      subject: 'Export naar Excel is leeg',
-      customer: 'Noordhout',
-      status: 'Wacht op klant',
-      priority: 'Normaal',
-      updatedAt: 'Gisteren 09:03'
-    },
-    {
-      id: 'TCK-1031',
-      subject: 'Abonnement wijzigen',
-      customer: 'Studio Lumen',
-      status: 'Gesloten',
-      priority: 'Laag',
-      updatedAt: 'Ma 13:22'
+  searchQuery: string = '';
+  filterOption: string = 'Alle berichten';
+
+  getFilteredMessages(): Message[] {
+    let filtered = this.messages;
+
+    // Filter op zoektermen
+    if (this.searchQuery.trim()) {
+      const query = this.searchQuery.toLowerCase();
+      filtered = filtered.filter(msg =>
+        msg.senderName.toLowerCase().includes(query) ||
+        msg.senderEmail.toLowerCase().includes(query) ||
+        msg.messageText.toLowerCase().includes(query)
+      );
     }
-  ]);
 
-  protected readonly aiAnswers = signal<AiAnswer[]>([
-    {
-      question: 'Waarom daalde het aantal leads in week 2?',
-      answer:
-        'Week 2 had minder instroom door lagere advertentie spend en een tijdelijke daling in conversie op de landingspagina. De grootste impact kwam van kanaal “Search” (-14%) en “Social” (-9%).',
-      sources: ['Marketing dashboard', 'Campaign spend', 'Landing page analytics']
-    },
-    {
-      question: 'Welke klanten hebben het hoogste churn risico?',
-      answer:
-        'Op basis van gebruik (logins, feature adoptie) en support volume lijken “Koster & Zn.” en “Noordhout” verhoogd risico te hebben. Advies: plan een check‑in en bied onboarding voor de nieuwe workflow aan.',
-      sources: ['Product usage', 'Support tickets', 'Account health model']
+    // Filter op status
+    if (this.filterOption === 'Ongelezen') {
+      filtered = filtered.filter(msg => msg.status === 'Nieuw');
+    } else if (this.filterOption === 'Gelezen') {
+      filtered = filtered.filter(msg => msg.status === 'Gelezen');
     }
-  ]);
 
-  protected readonly selectedAiIndex = signal(0);
-  protected readonly question = signal('');
-
-  protected readonly selectedAi = computed(() => {
-    const list = this.aiAnswers();
-    return list[this.selectedAiIndex()] ?? null;
-  });
-
-  protected setSelectedAi(index: number) {
-    this.selectedAiIndex.set(index);
+    return filtered;
   }
 
-  protected ask() {
-    const q = this.question().trim();
-    if (!q) return;
+  onSearchChange(query: string): void {
+    this.searchQuery = query;
+  }
 
-    const newCard: AiAnswer = {
-      question: q,
-      answer:
-        'Demo antwoord: Ik heb je vraag gezien. In een echte app zou dit vanuit een (RAG) AI‑service komen met bronnen en context uit je bedrijfsdata.',
-      sources: ['Demo dataset']
+  onFilterChange(option: string): void {
+    this.filterOption = option;
+  }
+
+  onMessageClick(message: Message): void {
+    const aiAnswers: AiAnswer[] = [
+      {
+        text: 'Placeholder',
+        tag: 'Informeel'
+      },
+      {
+        text: 'Placeholder',
+        tag: 'Professioneel'
+      }
+    ];
+
+    this.selectedMessage = {
+      id: message.id,
+      senderName: message.senderName,
+      senderEmail: message.senderEmail,
+      avatarGradient: message.avatarGradient,
+      avatarText: message.avatarText,
+      messageText: message.messageText,
+      messageType: 'Spraakbericht',
+      time: message.time,
+      date: message.date,
+      timestamp: `18 seconden  17 mrt. 2026, 10:30:00`,
+      aiAnswers: aiAnswers
     };
-
-    this.aiAnswers.update((cards) => [newCard, ...cards]);
-    this.selectedAiIndex.set(0);
-    this.question.set('');
   }
 
-  protected trackByIndex = (i: number) => i;
+  onBackFromDetail(): void {
+    this.selectedMessage = null;
+  }
+
+  onReplyMessage(replyText: string): void {
+    console.log('Reply:', replyText);
+    // Hier kan logica toegevoegd worden voor het versturen van een reply
+    this.selectedMessage = null;
+  }
 }

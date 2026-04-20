@@ -1,0 +1,92 @@
+<div class="message-detail-container">
+  <!-- Header with back button -->
+  <header class="detail-header">
+    <button class="back-button" (click)="onBackClick()">
+      <i class="fas fa-arrow-left"></i>
+      <span class="back-text">Terug naar inbox</span>
+    </button>
+  </header>
+
+  <!-- Message content -->
+  <main class="detail-content">
+    <!-- Sender info -->
+    <div class="sender-section">
+      <div class="sender-avatar" [style.background]="message.avatarGradient">
+        <span class="avatar-text">{{ message.avatarText }}</span>
+      </div>
+      <div class="sender-info">
+        <h1 class="sender-name">{{ message.senderName }}</h1>
+        <p class="sender-email">{{ message.senderEmail }}</p>
+        <div class="message-meta">
+          <span class="message-type-badge">{{ message.messageType }}</span>
+          <span class="message-time">
+            <i class="fas fa-clock"></i>
+            {{ message.time }}
+          </span>
+          <span class="message-date">{{ message.timestamp }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="divider"></div>
+
+    <!-- Message sections -->
+    <div class="message-sections">
+      <!-- Report section (Bericht) -->
+      <div class="message-section ai-section">
+          <div class="section-header">
+            <i class="fas fa-comment section-icon"></i>
+            <span class="section-title">Bericht</span>
+          </div>
+        <div class="section-content">
+          {{ message.messageText }}
+        </div>
+      </div>
+
+      <!-- AI Answers section -->
+      <div class="message-section ai-section" *ngIf="message.aiAnswers && message.aiAnswers.length > 0">
+        <div class="section-header">
+          <i class="fas fa-wand-magic-sparkles section-icon"></i>
+          <span class="section-title">AI-voorgestelde antwoorden</span>
+        </div>
+        <div class="ai-answers">
+          <div class="ai-answer" *ngFor="let answer of message.aiAnswers">
+            <div class="ai-content">
+              <span class="ai-tag" *ngIf="answer.tag">{{ answer.tag }}</span>
+              <div class="ai-text">{{ answer.text }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reply section -->
+    <div class="reply-section">
+      <div class="reply-header">
+        <h3 class="reply-title">Schrijf eigen antwoord</h3>
+        <i class="fas fa-pen reply-icon"></i>
+      </div>
+
+      <textarea
+        class="reply-textarea"
+        [(ngModel)]="replyText"
+        placeholder="Typ hier uw eigen antwoord of bwerk een AI-suggestie..."
+        (keydown.enter)="onKeyDownEnter($event)">
+      </textarea>
+
+      <div class="reply-footer">
+        <div class="character-count">{{ replyText.length }} karakters</div>
+        <div class="reply-actions">
+          <button class="btn btn-secondary" (click)="onDiscardReply()" [disabled]="!replyText.trim()">
+            Wissen
+          </button>
+          <button class="btn btn-primary" (click)="onSendReply()" [disabled]="!replyText.trim()">
+            <i class="fas fa-paper-plane send-icon"></i>
+            Verstuur antwoord
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

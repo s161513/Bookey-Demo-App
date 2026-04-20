@@ -1,189 +1,95 @@
-<div class="shell">
-  <aside class="sidebar" aria-label="Sidebar navigation">
-    <div class="brand">
-      <div class="brand__logo" aria-hidden="true">B</div>
-      <div class="brand__text">
-        <div class="brand__title">Bedrijfsdashboard</div>
-        <div class="brand__subtitle">{{ companyName }}</div>
-      </div>
+<div class="app-container">
+  <!-- Left Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-icon"><i class="fas fa-comments"></i></div>
+      <h1 class="logo-text">Bookey</h1>
     </div>
 
-    <nav class="nav">
-      <a class="nav__item nav__item--active" href="javascript:void(0)">Overzicht</a>
-      <a class="nav__item" href="javascript:void(0)">Rapportages</a>
-      <a class="nav__item" href="javascript:void(0)">Klanten</a>
-      <a class="nav__item" href="javascript:void(0)">Support</a>
-      <a class="nav__item" href="javascript:void(0)">Instellingen</a>
+    <nav class="nav-menu">
+      <a href="#" class="nav-item active">
+        <i class="fas fa-inbox icon"></i>
+        <span class="label">Inbox</span>
+        <span class="badge">3</span>
+      </a>
+      <a href="#" class="nav-item">
+        <i class="fas fa-paper-plane icon"></i>
+        <span class="label">Verzonden</span>
+      </a>
+      <a href="#" class="nav-item">
+        <i class="fas fa-cog icon"></i>
+        <span class="label">Instellingen</span>
+      </a>
     </nav>
 
-    <div class="sidebar__footer">
-      <div class="user">
-        <div class="user__avatar" aria-hidden="true">JI</div>
-        <div class="user__text">
-          <div class="user__name">J. I.</div>
-          <div class="user__role">Demo gebruiker</div>
-        </div>
+    <div class="sidebar-footer">
+      <div class="company-info">
+        <p class="company-label">Bedrijf:</p>
+        <p class="company-name">Kapper Katrien</p>
       </div>
     </div>
   </aside>
 
-  <div class="content">
-    <header class="topbar">
-      <div>
-        <div class="topbar__title">Overzicht</div>
-        <div class="topbar__subtitle">Realtime KPI’s, tickets en AI‑inzichten</div>
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Show detail view if message selected -->
+    <ng-container *ngIf="selectedMessage; else inboxView">
+      <app-message-detail
+        [message]="selectedMessage"
+        (backClick)="onBackFromDetail()"
+        (sendReply)="onReplyMessage($event)">
+      </app-message-detail>
+    </ng-container>
+
+    <!-- Show inbox view if no message selected -->
+    <ng-template #inboxView>
+      <!-- Header -->
+      <header class="inbox-header">
+        <h2 class="inbox-title">Inbox</h2>
+        <div class="header-controls">
+          <input
+            type="text"
+            class="search-input"
+            placeholder="Zoek berichten..."
+            [(ngModel)]="searchQuery"
+            (input)="onSearchChange(searchQuery)" />
+          <select
+            class="filter-select"
+            [(ngModel)]="filterOption"
+            (change)="onFilterChange(filterOption)">
+            <option>Alle berichten</option>
+            <option>Ongelezen</option>
+            <option>Gelezen</option>
+          </select>
+        </div>
+      </header>
+
+      <!-- Messages List -->
+      <div class="messages-container">
+        <div
+          class="message-item"
+          *ngFor="let msg of getFilteredMessages()"
+          (click)="onMessageClick(msg)">
+          <div class="message-avatar" [style.background]="msg.avatarGradient">
+            <span class="avatar-text">{{ msg.avatarText }}</span>
+          </div>
+          <div class="message-content">
+            <div class="message-header">
+              <h3 class="sender-name">{{ msg.senderName }}</h3>
+              <span class="message-time">{{ msg.time }}</span>
+            </div>
+            <p class="sender-email">{{ msg.senderEmail }}</p>
+            <p class="message-text">{{ msg.messageText }}</p>
+            <div class="message-meta">
+              <span class="status-badge" [class.new]="msg.status === 'Nieuw'" [class.read]="msg.status === 'Gelezen'">
+                {{ msg.status }}
+              </span>
+              <span class="time-badge"><i class="fas fa-clock"></i> {{ msg.time }}</span>
+              <span class="date-badge">{{ msg.date }}</span>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <div class="topbar__actions">
-        <div class="search">
-          <input class="search__input" placeholder="Zoek klant, ticket of rapport…" />
-        </div>
-        <button class="btn btn--ghost" type="button">Export</button>
-        <button class="btn" type="button">Nieuw rapport</button>
-      </div>
-    </header>
-
-    <main class="grid">
-      <section class="kpis" aria-label="KPI tiles">
-        <article *ngFor="let kpi of kpis" class="card kpi">
-          <div class="kpi__label">{{ kpi.label }}</div>
-          <div class="kpi__value">{{ kpi.value }}</div>
-          <div
-            class="kpi__delta"
-            [class.up]="kpi.deltaType === 'up'"
-            [class.down]="kpi.deltaType === 'down'"
-          >
-            <span class="kpi__dot" aria-hidden="true"></span>
-            {{ kpi.deltaLabel }}
-          </div>
-        </article>
-      </section>
-
-      <section class="card panel" aria-label="AI answers">
-        <div class="panel__header">
-          <div>
-            <div class="panel__title">AI‑antwoorden</div>
-            <div class="panel__subtitle">Stel een vraag over je data</div>
-          </div>
-          <span class="badge">demo</span>
-        </div>
-
-        <div class="panel__body">
-          <div class="ask">
-            <input
-              class="ask__input"
-              [value]="question()"
-              (input)="question.set($any($event.target).value)"
-              (keydown.enter)="ask()"
-              placeholder="Bijv. ‘Wat zijn de grootste kostenposten deze maand?’"
-            />
-            <button class="btn" type="button" (click)="ask()">Vraag</button>
-          </div>
-
-          <div class="ai-layout">
-            <div class="ai-list" role="list">
-              <button
-                *ngFor="let a of aiAnswers(); let i = index; trackBy: trackByIndex"
-                class="ai-item"
-                type="button"
-                [class.ai-item--active]="i === selectedAiIndex()"
-                (click)="setSelectedAi(i)"
-              >
-                <div class="ai-item__q">{{ a.question }}</div>
-                <div class="ai-item__meta">{{ a.sources.length }} bron(n)</div>
-              </button>
-            </div>
-
-            <div class="ai-detail" *ngIf="selectedAi() as detail">
-              <div class="ai-detail__title">Antwoord</div>
-              <div class="ai-detail__answer">{{ detail.answer }}</div>
-
-              <div class="ai-detail__title ai-detail__title--small">Bronnen</div>
-              <div class="chips" aria-label="Sources">
-                <span class="chip" *ngFor="let s of detail.sources">{{ s }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="card panel" aria-label="Open tickets">
-        <div class="panel__header">
-          <div>
-            <div class="panel__title">Support tickets</div>
-            <div class="panel__subtitle">Laatste updates</div>
-          </div>
-          <button class="btn btn--ghost" type="button">Bekijk alles</button>
-        </div>
-
-        <div class="table-wrap">
-          <table class="table" aria-label="Ticket table">
-            <thead>
-              <tr>
-                <th>Ticket</th>
-                <th>Onderwerp</th>
-                <th>Klant</th>
-                <th>Status</th>
-                <th>Prioriteit</th>
-                <th>Laatst bijgewerkt</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let t of tickets()">
-                <td class="mono">{{ t.id }}</td>
-                <td>{{ t.subject }}</td>
-                <td>{{ t.customer }}</td>
-                <td>
-                  <span
-                    class="pill"
-                    [class.pill--open]="t.status === 'Open'"
-                    [class.pill--wait]="t.status === 'Wacht op klant'"
-                    [class.pill--done]="t.status === 'Gesloten'"
-                  >
-                    {{ t.status }}
-                  </span>
-                </td>
-                <td>
-                  <span class="pill pill--priority" [class.pill--high]="t.priority === 'Hoog'">
-                    {{ t.priority }}
-                  </span>
-                </td>
-                <td class="muted">{{ t.updatedAt }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="card panel" aria-label="Insights">
-        <div class="panel__header">
-          <div>
-            <div class="panel__title">Insights</div>
-            <div class="panel__subtitle">Korte samenvatting</div>
-          </div>
-        </div>
-
-        <div class="insights">
-          <div class="insight">
-            <div class="insight__title">Omzet</div>
-            <div class="insight__body">
-              Top 3 klanten dragen 41% bij aan MTD omzet. Groei komt vooral uit upsell bij bestaande accounts.
-            </div>
-          </div>
-          <div class="insight">
-            <div class="insight__title">Support</div>
-            <div class="insight__body">
-              Ticketvolume is stabiel. Hoogste categorie: facturatie (26%). SLA blijft boven target.
-            </div>
-          </div>
-          <div class="insight">
-            <div class="insight__title">Marketing</div>
-            <div class="insight__body">
-              Conversie op landingspagina is 3,8%. Kleine dip sinds vorige week door A/B test variant B.
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
+    </ng-template>
+  </main>
 </div>
