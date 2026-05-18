@@ -1,86 +1,49 @@
 <div class="appointments-container">
-  <!-- Header -->
   <header class="appointments-header">
-    <h2 class="appointments-title">Appointment Requests</h2>
-    <div class="filter-tabs">
-      <button
-        class="filter-tab"
-        [class.active]="activeFilter === 'Pending'"
-        (click)="setFilter('Pending')">
-        Pending
-        <span class="tab-count" *ngIf="pendingCount > 0">{{ pendingCount }}</span>
-      </button>
-      <button
-        class="filter-tab"
-        [class.active]="activeFilter === 'Accepted'"
-        (click)="setFilter('Accepted')">
-        Accepted
-      </button>
-      <button
-        class="filter-tab"
-        [class.active]="activeFilter === 'Denied'"
-        (click)="setFilter('Denied')">
-        Denied
-      </button>
-    </div>
+    <h2 class="appointments-title">Upcoming Appointments</h2>
+    <span class="appt-count" *ngIf="appointments.length > 0">{{ appointments.length }} confirmed</span>
   </header>
 
-  <!-- Request list -->
-  <div class="requests-list">
-    <div class="empty-state" *ngIf="filteredRequests.length === 0">
-      <i class="fas fa-calendar-check empty-icon"></i>
-      <p>No {{ activeFilter.toLowerCase() }} requests</p>
+  <div class="schedule-list">
+    <div class="empty-state" *ngIf="appointments.length === 0">
+      <i class="fas fa-calendar-days empty-icon"></i>
+      <p>No upcoming appointments</p>
+      <span class="empty-hint">Accept appointment requests from the Inbox to add them here.</span>
     </div>
 
-    <div class="request-card" *ngFor="let req of filteredRequests">
-      <!-- Card left: avatar + info -->
-      <div class="card-main">
-        <div class="customer-avatar" [style.background]="req.avatarGradient">
-          {{ req.avatarText }}
-        </div>
-
-        <div class="card-info">
-          <div class="card-top">
-            <span class="customer-name">{{ req.customerName }}</span>
-            <span class="received-at">{{ req.receivedAt }}</span>
-          </div>
-          <span class="customer-email">{{ req.customerEmail }}</span>
-
-          <div class="appointment-details">
-            <span class="detail-item">
-              <i class="fas fa-scissors"></i>
-              {{ req.service }}
-            </span>
-            <span class="detail-item">
-              <i class="fas fa-calendar"></i>
-              {{ req.requestedDate }}
-            </span>
-            <span class="detail-item">
-              <i class="fas fa-clock"></i>
-              {{ req.requestedTime }}
-            </span>
-          </div>
-
-          <p class="request-note" *ngIf="req.note">
-            <i class="fas fa-quote-left note-icon"></i>
-            {{ req.note }}
-          </p>
-        </div>
+    <div class="day-group" *ngFor="let group of groupedAppointments">
+      <!-- Day header -->
+      <div class="day-header">
+        <span class="day-label">{{ group.date }}</span>
+        <span class="day-count">{{ group.items.length }} {{ group.items.length === 1 ? 'appointment' : 'appointments' }}</span>
       </div>
 
-      <!-- Actions / status -->
-      <div class="card-actions" *ngIf="req.status === 'Pending'">
-        <button class="btn btn-deny" (click)="deny(req)">
-          <i class="fas fa-xmark"></i> Deny
-        </button>
-        <button class="btn btn-accept" (click)="accept(req)">
-          <i class="fas fa-check"></i> Accept
-        </button>
-      </div>
+      <!-- Cards for this day -->
+      <div class="appt-card" *ngFor="let appt of group.items">
+        <div class="appt-time-col">
+          <span class="appt-time">{{ appt.time }}</span>
+        </div>
 
-      <div class="status-indicator" *ngIf="req.status !== 'Pending'" [class.accepted]="req.status === 'Accepted'" [class.denied]="req.status === 'Denied'">
-        <i class="fas" [class.fa-check]="req.status === 'Accepted'" [class.fa-xmark]="req.status === 'Denied'"></i>
-        {{ req.status }}
+        <div class="appt-divider"></div>
+
+        <div class="customer-col">
+          <div class="customer-avatar" [style.background]="appt.avatarGradient">
+            {{ appt.avatarText }}
+          </div>
+          <div class="customer-info">
+            <span class="customer-name">{{ appt.customerName }}</span>
+            <span class="customer-email">{{ appt.customerEmail }}</span>
+          </div>
+        </div>
+
+        <div class="service-chip">
+          <i class="fas fa-scissors"></i>
+          {{ appt.service }}
+        </div>
+
+        <div class="confirmed-badge">
+          <i class="fas fa-circle-check"></i> Confirmed
+        </div>
       </div>
     </div>
   </div>

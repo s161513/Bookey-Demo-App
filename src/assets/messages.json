@@ -9,7 +9,11 @@
     "messageType": "Voice message",
     "status": "New",
     "time": "18s",
-    "date": "15 days ago"
+    "date": "15 days ago",
+    "isAppointmentRequest": true,
+    "appointmentDate": "Thursday, May 22, 2026",
+    "appointmentTime": "14:00",
+    "service": "Haircut"
   },
   {
     "id": "2",

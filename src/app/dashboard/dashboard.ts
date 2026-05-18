@@ -18,6 +18,22 @@ export interface Message {
   time: string;
   date: string;
   icon?: string;
+  isAppointmentRequest?: boolean;
+  appointmentDate?: string;
+  appointmentTime?: string;
+  service?: string;
+  appointmentStatus?: 'accepted' | 'denied';
+}
+
+export interface ConfirmedAppointment {
+  id: string;
+  customerName: string;
+  customerEmail: string;
+  avatarText: string;
+  avatarGradient: string;
+  service: string;
+  date: string;
+  time: string;
 }
 
 @Component({
@@ -35,6 +51,18 @@ export class DashboardComponent implements OnInit {
   filteredMessages: Message[] = [];
   searchQuery: string = '';
   filterOption: string = 'All messages';
+  confirmedAppointments: ConfirmedAppointment[] = [
+    {
+      id: 'pre-1',
+      customerName: 'Peter Janssen',
+      customerEmail: 'p.janssen@mail.com',
+      avatarText: 'PJ',
+      avatarGradient: 'linear-gradient(135deg, #c4a0ff 0%, #e6ccff 100%)',
+      service: 'Trim & Beard',
+      date: 'Monday, May 19, 2026',
+      time: '09:00'
+    }
+  ];
 
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
@@ -113,16 +141,41 @@ export class DashboardComponent implements OnInit {
       this.updateFilteredMessages();
     }
 
-    const aiAnswers: AiAnswer[] = [
-      {
-        text: 'Hey! Sure, tomorrow at 2pm works great. See you then!',
-        tag: 'Informal'
-      },
-      {
-        text: 'Good afternoon, tomorrow at 2:00 PM is available. We hereby confirm your appointment. See you tomorrow!',
-        tag: 'Professional'
-      }
-    ];
+    const aiAnswers: AiAnswer[] = message.isAppointmentRequest
+      ? [
+          {
+            text: `Hey ${message.senderName.split(' ')[0]}! ${message.appointmentDate} at ${message.appointmentTime} works perfectly. See you then!`,
+            tag: 'Confirm · Casual',
+            tagType: 'confirm'
+          },
+          {
+            text: `Good day, ${message.senderName}. We confirm your ${message.service} appointment on ${message.appointmentDate} at ${message.appointmentTime}. We look forward to seeing you.`,
+            tag: 'Confirm · Formal',
+            tagType: 'confirm'
+          },
+          {
+            text: `Hey ${message.senderName.split(' ')[0]}, unfortunately ${message.appointmentDate} at ${message.appointmentTime} is already taken. Could you come by on Friday, May 23 at 10:00 instead? Let me know!`,
+            tag: 'Decline · Casual',
+            tagType: 'decline'
+          },
+          {
+            text: `Dear ${message.senderName}, unfortunately we are fully booked on ${message.appointmentDate} at ${message.appointmentTime}. We would like to offer you an alternative: Friday, May 23 at 10:00. Please let us know if this suits you.`,
+            tag: 'Decline · Formal',
+            tagType: 'decline'
+          }
+        ]
+      : [
+          {
+            text: 'Hey! Sure, tomorrow at 2pm works great. See you then!',
+            tag: 'Informal',
+            tagType: 'default'
+          },
+          {
+            text: 'Good afternoon, tomorrow at 2:00 PM is available. We hereby confirm your appointment. See you tomorrow!',
+            tag: 'Professional',
+            tagType: 'default'
+          }
+        ];
 
     this.selectedMessage = {
       id: message.id,
@@ -135,7 +188,12 @@ export class DashboardComponent implements OnInit {
       time: message.time,
       date: message.date,
       timestamp: `18 seconds  Mar 17, 2026, 10:30:00`,
-      aiAnswers: aiAnswers
+      aiAnswers: aiAnswers,
+      isAppointmentRequest: message.isAppointmentRequest,
+      appointmentDate: message.appointmentDate,
+      appointmentTime: message.appointmentTime,
+      service: message.service,
+      appointmentStatus: message.appointmentStatus
     };
   }
 
@@ -146,6 +204,37 @@ export class DashboardComponent implements OnInit {
   onReplyMessage(replyText: string): void {
     console.log('Reply:', replyText);
     this.selectedMessage = null;
+  }
+
+  onAcceptAppointment(): void {
+    if (!this.selectedMessage) return;
+    const message = this.messages.find(m => m.id === this.selectedMessage!.id);
+    if (!message) return;
+    message.appointmentStatus = 'accepted';
+    this.selectedMessage.appointmentStatus = 'accepted';
+    this.confirmedAppointments = [
+      ...this.confirmedAppointments,
+      {
+        id: message.id,
+        customerName: message.senderName,
+        customerEmail: message.senderEmail,
+        avatarText: message.avatarText,
+        avatarGradient: message.avatarGradient,
+        service: message.service ?? 'Appointment',
+        date: message.appointmentDate ?? '',
+        time: message.appointmentTime ?? ''
+      }
+    ];
+    this.cdr.markForCheck();
+  }
+
+  onDenyAppointment(): void {
+    if (!this.selectedMessage) return;
+    const message = this.messages.find(m => m.id === this.selectedMessage!.id);
+    if (!message) return;
+    message.appointmentStatus = 'denied';
+    this.selectedMessage.appointmentStatus = 'denied';
+    this.cdr.markForCheck();
   }
 
   showSettings(): void {

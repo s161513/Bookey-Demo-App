@@ -43,7 +43,7 @@
 
     <!-- Appointments view -->
     <ng-container *ngIf="currentView === 'appointments'">
-      <app-appointments></app-appointments>
+      <app-appointments [appointments]="confirmedAppointments"></app-appointments>
     </ng-container>
 
     <!-- Inbox view -->
@@ -53,7 +53,9 @@
       <app-message-detail
         [message]="selectedMessage"
         (backClick)="onBackFromDetail()"
-        (sendReply)="onReplyMessage($event)">
+        (sendReply)="onReplyMessage($event)"
+        (acceptAppointment)="onAcceptAppointment()"
+        (denyAppointment)="onDenyAppointment()">
       </app-message-detail>
     </ng-container>
 

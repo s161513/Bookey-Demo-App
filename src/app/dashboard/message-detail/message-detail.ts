@@ -14,11 +14,17 @@ export interface MessageDetail {
   date: string;
   timestamp: string;
   aiAnswers?: AiAnswer[];
+  isAppointmentRequest?: boolean;
+  appointmentDate?: string;
+  appointmentTime?: string;
+  service?: string;
+  appointmentStatus?: 'accepted' | 'denied';
 }
 
 export interface AiAnswer {
   text: string;
   tag?: string;
+  tagType?: 'confirm' | 'decline' | 'default';
 }
 
 @Component({
@@ -42,6 +48,8 @@ export class MessageDetailComponent {
   @Input() message!: MessageDetail;
   @Output() backClick = new EventEmitter<void>();
   @Output() sendReply = new EventEmitter<string>();
+  @Output() acceptAppointment = new EventEmitter<void>();
+  @Output() denyAppointment = new EventEmitter<void>();
 
   replyText: string = '';
   selectedAiAnswerText: string | null = null;
@@ -61,6 +69,14 @@ export class MessageDetailComponent {
 
   onDiscardReply(): void {
     this.replyText = '';
+  }
+
+  onAccept(): void {
+    this.acceptAppointment.emit();
+  }
+
+  onDeny(): void {
+    this.denyAppointment.emit();
   }
 
   onKeyDownEnter(event: Event): void {

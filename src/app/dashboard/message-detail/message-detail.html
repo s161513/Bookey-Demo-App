@@ -57,7 +57,10 @@
         <div class="ai-answers">
           <div class="ai-answer" *ngFor="let answer of message.aiAnswers" [class.selected]="selectedAiAnswerText === answer.text" (click)="selectAiAnswer(answer.text)">
             <div class="ai-content">
-              <span class="ai-tag" *ngIf="answer.tag">{{ answer.tag }}</span>
+              <span class="ai-tag"
+                *ngIf="answer.tag"
+                [class.tag-confirm]="answer.tagType === 'confirm'"
+                [class.tag-decline]="answer.tagType === 'decline'">{{ answer.tag }}</span>
               <div class="ai-text">{{ answer.text }}</div>
             </div>
             <div class="ai-actions">
@@ -70,6 +73,44 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Appointment request card -->
+    <div class="message-section ai-section appointment-section" *ngIf="message.isAppointmentRequest">
+      <div class="section-header">
+        <i class="fas fa-calendar-days section-icon appt-icon"></i>
+        <span class="section-title">Appointment request</span>
+      </div>
+
+      <div class="appt-details">
+        <span class="appt-chip">
+          <i class="fas fa-scissors"></i> {{ message.service }}
+        </span>
+        <span class="appt-chip">
+          <i class="fas fa-calendar"></i> {{ message.appointmentDate }}
+        </span>
+        <span class="appt-chip">
+          <i class="fas fa-clock"></i> {{ message.appointmentTime }}
+        </span>
+      </div>
+
+      <div class="appt-actions" *ngIf="!message.appointmentStatus">
+        <button class="btn btn-deny-appt" (click)="onDeny()">
+          <i class="fas fa-xmark"></i> Decline
+        </button>
+        <button class="btn btn-accept-appt" (click)="onAccept()">
+          <i class="fas fa-check"></i> Confirm appointment
+        </button>
+      </div>
+
+      <div class="appt-confirmed" *ngIf="message.appointmentStatus === 'accepted'">
+        <i class="fas fa-circle-check"></i>
+        You confirmed this appointment
+      </div>
+      <div class="appt-denied" *ngIf="message.appointmentStatus === 'denied'">
+        <i class="fas fa-circle-xmark"></i>
+        You declined this appointment
       </div>
     </div>
 
