@@ -1,0 +1,232 @@
+<div class="settings-container">
+  <!-- Header -->
+  <header class="settings-header">
+    <h2 class="settings-title">Settings</h2>
+  </header>
+
+  <!-- Tab Navigation -->
+  <div class="settings-layout">
+    <nav class="settings-nav">
+      <button class="settings-nav-item" [class.active]="activeTab === 'team'" (click)="setTab('team')">
+        <i class="fas fa-users"></i>
+        <span>Team</span>
+      </button>
+      <button class="settings-nav-item" [class.active]="activeTab === 'language'" (click)="setTab('language')">
+        <i class="fas fa-globe"></i>
+        <span>Language</span>
+      </button>
+      <button class="settings-nav-item" [class.active]="activeTab === 'ai'" (click)="setTab('ai')">
+        <i class="fas fa-wand-magic-sparkles"></i>
+        <span>AI Settings</span>
+      </button>
+    </nav>
+
+    <div class="settings-content">
+
+      <!-- TEAM TAB -->
+      <div *ngIf="activeTab === 'team'" class="tab-panel">
+        <div class="panel-header">
+          <div>
+            <h3 class="panel-title">Team Management</h3>
+            <p class="panel-desc">Manage who has access to your Bookey workspace.</p>
+          </div>
+          <span class="admin-badge"><i class="fas fa-shield-halved"></i> Admin only</span>
+        </div>
+
+        <!-- Member list -->
+        <div class="member-list">
+          <div class="member-item" *ngFor="let member of teamMembers">
+            <div class="member-avatar" [style.background]="member.avatarGradient">
+              {{ member.avatarText }}
+            </div>
+            <div class="member-info">
+              <span class="member-name">{{ member.name }}</span>
+              <span class="member-email">{{ member.email }}</span>
+            </div>
+            <span class="role-badge" [class.admin]="member.role === 'Admin'">{{ member.role }}</span>
+            <button class="remove-btn" (click)="removeMember(member)" [disabled]="member.role === 'Admin'" title="Remove member">
+              <i class="fas fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Invite form -->
+        <div class="invite-section" *ngIf="!showInviteForm">
+          <button class="btn btn-primary" (click)="toggleInviteForm()">
+            <i class="fas fa-plus"></i> Invite user
+          </button>
+        </div>
+
+        <div class="invite-form" *ngIf="showInviteForm">
+          <h4 class="invite-title">Invite a new team member</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Email address</label>
+              <input
+                class="form-input"
+                type="email"
+                placeholder="colleague@example.nl"
+                [(ngModel)]="inviteEmail" />
+            </div>
+            <div class="form-group form-group-sm">
+              <label class="form-label">Role</label>
+              <select class="form-select" [(ngModel)]="inviteRole">
+                <option value="Member">Member</option>
+                <option value="Admin">Admin</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-secondary" (click)="toggleInviteForm()">Cancel</button>
+            <button class="btn btn-primary" (click)="sendInvite()" [disabled]="!inviteEmail.trim()">
+              <i class="fas fa-paper-plane"></i> Send invite
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- LANGUAGE TAB -->
+      <div *ngIf="activeTab === 'language'" class="tab-panel">
+        <div class="panel-header">
+          <div>
+            <h3 class="panel-title">Language</h3>
+            <p class="panel-desc">Choose the language for the Bookey interface.</p>
+          </div>
+        </div>
+
+        <div class="setting-card">
+          <div class="setting-row">
+            <div class="setting-label-group">
+              <span class="setting-label">Interface language</span>
+              <span class="setting-hint">Affects menus, buttons, and labels throughout the app.</span>
+            </div>
+            <select class="form-select" [(ngModel)]="selectedLanguage">
+              <option *ngFor="let lang of languages" [value]="lang.code">{{ lang.label }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="setting-card">
+          <div class="setting-row">
+            <div class="setting-label-group">
+              <span class="setting-label">AI reply language</span>
+              <span class="setting-hint">Language the AI uses when generating suggested answers.</span>
+            </div>
+            <select class="form-select" [(ngModel)]="selectedLanguage">
+              <option *ngFor="let lang of languages" [value]="lang.code">{{ lang.label }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="save-row">
+          <button class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+
+      <!-- AI TAB -->
+      <div *ngIf="activeTab === 'ai'" class="tab-panel">
+        <div class="panel-header">
+          <div>
+            <h3 class="panel-title">AI Settings</h3>
+            <p class="panel-desc">Control how the AI assists you and handles messages automatically.</p>
+          </div>
+        </div>
+
+        <!-- General AI -->
+        <div class="setting-card">
+          <h4 class="card-title">General</h4>
+
+          <div class="setting-row">
+            <div class="setting-label-group">
+              <span class="setting-label">AI suggestions</span>
+              <span class="setting-hint">Show AI-generated reply suggestions when opening a message.</span>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" [(ngModel)]="aiSuggestionsEnabled" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Auto-answer -->
+        <div class="setting-card">
+          <h4 class="card-title">Auto-answer</h4>
+          <p class="card-desc">When enabled, the AI will automatically send a reply without your review.</p>
+
+          <div class="setting-row">
+            <div class="setting-label-group">
+              <span class="setting-label">Auto-answer text messages</span>
+              <span class="setting-hint">Automatically reply to incoming text messages.</span>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" [(ngModel)]="autoAnswerText" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-divider"></div>
+
+          <div class="setting-row">
+            <div class="setting-label-group">
+              <span class="setting-label">Auto-answer voice messages</span>
+              <span class="setting-hint">Automatically reply to transcribed voice messages.</span>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" [(ngModel)]="autoAnswerVoice" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Reply style -->
+        <div class="setting-card" [class.disabled]="!autoAnswerText && !autoAnswerVoice">
+          <h4 class="card-title">Auto-answer style</h4>
+          <p class="card-desc">Tone the AI will use for automatic replies.</p>
+
+          <div class="radio-group">
+            <label class="radio-option" [class.selected]="autoAnswerStyle === 'informal'">
+              <input type="radio" name="style" value="informal" [(ngModel)]="autoAnswerStyle" />
+              <div class="radio-content">
+                <span class="radio-label">Informal</span>
+                <span class="radio-hint">Friendly and casual tone</span>
+              </div>
+            </label>
+            <label class="radio-option" [class.selected]="autoAnswerStyle === 'professional'">
+              <input type="radio" name="style" value="professional" [(ngModel)]="autoAnswerStyle" />
+              <div class="radio-content">
+                <span class="radio-label">Professional</span>
+                <span class="radio-hint">Formal and business-like tone</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Confidence threshold -->
+        <div class="setting-card" [class.disabled]="!autoAnswerText && !autoAnswerVoice">
+          <h4 class="card-title">Confidence threshold</h4>
+          <p class="card-desc">Only auto-answer when the AI is at least this confident in its reply.</p>
+
+          <div class="slider-row">
+            <input
+              type="range"
+              class="threshold-slider"
+              min="50"
+              max="100"
+              step="5"
+              [(ngModel)]="confidenceThreshold" />
+            <span class="threshold-value">{{ confidenceThreshold }}%</span>
+          </div>
+          <div class="slider-labels">
+            <span>More answers</span>
+            <span>Fewer, safer answers</span>
+          </div>
+        </div>
+
+        <div class="save-row">
+          <button class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

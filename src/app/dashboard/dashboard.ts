@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { MessageDetailComponent, MessageDetail, AiAnswer } from './message-detail/message-detail';
+import { SettingsComponent } from './settings/settings';
+import { AppointmentsComponent } from './appointments/appointments';
 
 export interface Message {
   id: string;
@@ -21,12 +23,13 @@ export interface Message {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, MessageDetailComponent],
+  imports: [CommonModule, FormsModule, MessageDetailComponent, SettingsComponent, AppointmentsComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent implements OnInit {
+  currentView: 'inbox' | 'appointments' | 'settings' = 'inbox';
   selectedMessage: MessageDetail | null = null;
   messages: Message[] = [];
   filteredMessages: Message[] = [];
@@ -143,5 +146,19 @@ export class DashboardComponent implements OnInit {
   onReplyMessage(replyText: string): void {
     console.log('Reply:', replyText);
     this.selectedMessage = null;
+  }
+
+  showSettings(): void {
+    this.currentView = 'settings';
+    this.selectedMessage = null;
+  }
+
+  showAppointments(): void {
+    this.currentView = 'appointments';
+    this.selectedMessage = null;
+  }
+
+  showInbox(): void {
+    this.currentView = 'inbox';
   }
 }

@@ -1,0 +1,302 @@
+.appointments-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: white;
+  overflow: hidden;
+}
+
+/* Header */
+.appointments-header {
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.appointments-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+  color: #1a1a1a;
+}
+
+/* Filter tabs */
+.filter-tabs {
+  display: flex;
+  gap: 4px;
+  background: #f5f5f5;
+  border-radius: 10px;
+  padding: 4px;
+}
+
+.filter-tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 7px;
+  background: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filter-tab:hover {
+  background: #ebebeb;
+  color: #333;
+}
+
+.filter-tab.active {
+  background: white;
+  color: #1a1a1a;
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.tab-count {
+  background: #0066ff;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Request list */
+.requests-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Empty state */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 60px 20px;
+  color: #bbb;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 40px;
+}
+
+.empty-state p {
+  font-size: 15px;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Request card */
+.request-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid #e8e8e8;
+  border-radius: 14px;
+  background: white;
+  transition: box-shadow 0.15s ease;
+}
+
+.request-card:hover {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+.card-main {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Avatar */
+.customer-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: white;
+  font-size: 16px;
+}
+
+/* Info */
+.card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.customer-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.received-at {
+  font-size: 12px;
+  color: #aaa;
+  white-space: nowrap;
+}
+
+.customer-email {
+  font-size: 13px;
+  color: #888;
+}
+
+.appointment-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #444;
+}
+
+.detail-item i {
+  color: #0066ff;
+  font-size: 13px;
+  width: 14px;
+  text-align: center;
+}
+
+.request-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  color: #666;
+  margin: 4px 0 0 0;
+  padding: 10px 12px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border-left: 3px solid #e0e0e0;
+  line-height: 1.5;
+}
+
+.note-icon {
+  color: #ccc;
+  font-size: 12px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Action buttons */
+.card-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-accept {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.btn-accept:hover {
+  background: #2e7d32;
+  color: white;
+  box-shadow: 0 2px 8px rgba(46, 125, 50, 0.3);
+}
+
+.btn-deny {
+  background: #fdecea;
+  color: #c62828;
+}
+
+.btn-deny:hover {
+  background: #c62828;
+  color: white;
+  box-shadow: 0 2px 8px rgba(198, 40, 40, 0.3);
+}
+
+/* Status indicator (after action) */
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.status-indicator.accepted {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-indicator.denied {
+  background: #fdecea;
+  color: #c62828;
+}
+
+/* Scrollbar */
+.requests-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.requests-list::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+
+.requests-list::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.requests-list::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}

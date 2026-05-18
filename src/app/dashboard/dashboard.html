@@ -7,16 +7,20 @@
     </div>
 
     <nav class="nav-menu">
-      <a href="#" class="nav-item active">
+      <a href="#" class="nav-item" [class.active]="currentView === 'inbox'" (click)="showInbox(); $event.preventDefault()">
         <i class="fas fa-inbox icon"></i>
         <span class="label">Inbox</span>
         <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+      </a>
+      <a href="#" class="nav-item" [class.active]="currentView === 'appointments'" (click)="showAppointments(); $event.preventDefault()">
+        <i class="fas fa-calendar-days icon"></i>
+        <span class="label">Appointments</span>
       </a>
       <a href="#" class="nav-item">
         <i class="fas fa-paper-plane icon"></i>
         <span class="label">Sent</span>
       </a>
-      <a href="#" class="nav-item">
+      <a href="#" class="nav-item" [class.active]="currentView === 'settings'" (click)="showSettings(); $event.preventDefault()">
         <i class="fas fa-cog icon"></i>
         <span class="label">Settings</span>
       </a>
@@ -32,6 +36,18 @@
 
   <!-- Main Content -->
   <main class="main-content">
+    <!-- Settings view -->
+    <ng-container *ngIf="currentView === 'settings'">
+      <app-settings (close)="showInbox()"></app-settings>
+    </ng-container>
+
+    <!-- Appointments view -->
+    <ng-container *ngIf="currentView === 'appointments'">
+      <app-appointments></app-appointments>
+    </ng-container>
+
+    <!-- Inbox view -->
+    <ng-container *ngIf="currentView === 'inbox'">
     <!-- Show detail view if message selected -->
     <ng-container *ngIf="selectedMessage; else inboxView">
       <app-message-detail
@@ -96,5 +112,6 @@
         </div>
       </div>
     </ng-template>
+    </ng-container>
   </main>
 </div>
