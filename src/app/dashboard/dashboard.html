@@ -10,7 +10,7 @@
       <a href="#" class="nav-item active">
         <i class="fas fa-inbox icon"></i>
         <span class="label">Inbox</span>
-        <span class="badge">3</span>
+        <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
       </a>
       <a href="#" class="nav-item">
         <i class="fas fa-paper-plane icon"></i>
@@ -81,7 +81,12 @@
             <p class="sender-email">{{ msg.senderEmail }}</p>
             <p class="message-text">{{ msg.messageText }}</p>
             <div class="message-meta">
-              <span class="status-badge" [class.new]="msg.status === 'New'" [class.read]="msg.status === 'Read'">
+              <span
+                class="status-badge"
+                [class.new]="msg.status === 'New'"
+                [class.read]="msg.status === 'Read'"
+                (click)="toggleMessageStatus(msg, $event)"
+                title="{{ msg.status === 'New' ? 'Mark as read' : 'Mark as unread' }}">
                 {{ msg.status }}
               </span>
               <span class="time-badge"><i class="fas fa-clock"></i> {{ msg.time }}</span>

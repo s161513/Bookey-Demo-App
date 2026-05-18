@@ -93,7 +93,23 @@ export class DashboardComponent implements OnInit {
     this.updateFilteredMessages();
   }
 
+  get unreadCount(): number {
+    return this.messages.filter(m => m.status === 'New').length;
+  }
+
+  toggleMessageStatus(message: Message, event: Event): void {
+    event.stopPropagation();
+    message.status = message.status === 'New' ? 'Read' : 'New';
+    this.updateFilteredMessages();
+    this.cdr.markForCheck();
+  }
+
   onMessageClick(message: Message): void {
+    if (message.status === 'New') {
+      message.status = 'Read';
+      this.updateFilteredMessages();
+    }
+
     const aiAnswers: AiAnswer[] = [
       {
         text: 'Hey! Sure, tomorrow at 2pm works great. See you then!',
