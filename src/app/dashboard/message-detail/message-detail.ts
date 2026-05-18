@@ -9,7 +9,7 @@ export interface MessageDetail {
   avatarGradient: string;
   avatarText: string;
   messageText: string;
-  messageType: 'Spraakbericht' | 'Tekstbericht';
+  messageType: 'Voice message' | 'Text message';
   time: string;
   date: string;
   timestamp: string;

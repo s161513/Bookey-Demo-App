@@ -11,8 +11,8 @@ export interface Message {
   avatarGradient: string;
   avatarText: string;
   messageText: string;
-  messageType: 'Spraakbericht' | 'Tekstbericht';
-  status: 'Nieuw' | 'Gelezen';
+  messageType: 'Voice message' | 'Text message';
+  status: 'New' | 'Read';
   time: string;
   date: string;
   icon?: string;
@@ -31,7 +31,7 @@ export class DashboardComponent implements OnInit {
   messages: Message[] = [];
   filteredMessages: Message[] = [];
   searchQuery: string = '';
-  filterOption: string = 'Alle berichten';
+  filterOption: string = 'All messages';
 
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
@@ -65,7 +65,6 @@ export class DashboardComponent implements OnInit {
   getFilteredMessages(): Message[] {
     let filtered = this.messages;
 
-    // Filter op zoektermen
     if (this.searchQuery.trim()) {
       const query = this.searchQuery.toLowerCase();
       filtered = filtered.filter(msg =>
@@ -75,11 +74,10 @@ export class DashboardComponent implements OnInit {
       );
     }
 
-    // Filter op status
-    if (this.filterOption === 'Ongelezen') {
-      filtered = filtered.filter(msg => msg.status === 'Nieuw');
-    } else if (this.filterOption === 'Gelezen') {
-      filtered = filtered.filter(msg => msg.status === 'Gelezen');
+    if (this.filterOption === 'Unread') {
+      filtered = filtered.filter(msg => msg.status === 'New');
+    } else if (this.filterOption === 'Read') {
+      filtered = filtered.filter(msg => msg.status === 'Read');
     }
 
     return filtered;
@@ -98,12 +96,12 @@ export class DashboardComponent implements OnInit {
   onMessageClick(message: Message): void {
     const aiAnswers: AiAnswer[] = [
       {
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dignissim leo ex, at facilisis magna dignissim sed. Mauris dui urna.',
-        tag: 'Informeel'
+        text: 'Hey! Sure, tomorrow at 2pm works great. See you then!',
+        tag: 'Informal'
       },
       {
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vitae nisi a diam finibus malesuada nec ac dui. Vestibulum tempor.',
-        tag: 'Professioneel'
+        text: 'Good afternoon, tomorrow at 2:00 PM is available. We hereby confirm your appointment. See you tomorrow!',
+        tag: 'Professional'
       }
     ];
 
@@ -117,7 +115,7 @@ export class DashboardComponent implements OnInit {
       messageType: message.messageType,
       time: message.time,
       date: message.date,
-      timestamp: `18 seconden  17 mrt. 2026, 10:30:00`,
+      timestamp: `18 seconds  Mar 17, 2026, 10:30:00`,
       aiAnswers: aiAnswers
     };
   }
@@ -128,7 +126,6 @@ export class DashboardComponent implements OnInit {
 
   onReplyMessage(replyText: string): void {
     console.log('Reply:', replyText);
-    // Hier kan logica toegevoegd worden voor het versturen van een reply
     this.selectedMessage = null;
   }
 }

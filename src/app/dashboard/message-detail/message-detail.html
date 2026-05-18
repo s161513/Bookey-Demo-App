@@ -3,7 +3,7 @@
   <header class="detail-header">
     <button class="back-button" (click)="onBackClick()">
       <i class="fas fa-arrow-left"></i>
-      <span class="back-text">Terug naar inbox</span>
+      <span class="back-text">Back to inbox</span>
     </button>
   </header>
 
@@ -37,10 +37,10 @@
       <div class="message-section ai-section">
         <div class="section-header">
           <i class="fas fa-comment section-icon"></i>
-          <span class="section-title">Bericht</span>
-          <span class="transcription-badge" *ngIf="message.messageType === 'Spraakbericht'">
+          <span class="section-title">Message</span>
+          <span class="transcription-badge" *ngIf="message.messageType === 'Voice message'">
             <i class="fas fa-microphone"></i>
-            Getranscribeerd
+            Transcribed
           </span>
         </div>
         <div class="section-content">
@@ -52,7 +52,7 @@
       <div class="message-section ai-section" *ngIf="message.aiAnswers && message.aiAnswers.length > 0">
         <div class="section-header">
           <i class="fas fa-wand-magic-sparkles section-icon"></i>
-          <span class="section-title">AI-voorgestelde antwoorden</span>
+          <span class="section-title">AI-suggested answers</span>
         </div>
         <div class="ai-answers">
           <div class="ai-answer" *ngFor="let answer of message.aiAnswers" [class.selected]="selectedAiAnswerText === answer.text" (click)="selectAiAnswer(answer.text)">
@@ -61,7 +61,7 @@
               <div class="ai-text">{{ answer.text }}</div>
             </div>
             <div class="ai-actions">
-              <button class="ai-use-btn" (click)="useAiAnswer(answer.text, $event)" title="Voeg dit antwoord toe aan je reply">
+              <button class="ai-use-btn" (click)="useAiAnswer(answer.text, $event)" title="Add this answer to your reply">
                 <i class="fas fa-arrow-down"></i>
               </button>
               <div class="ai-checkmark" *ngIf="selectedAiAnswerText === answer.text">
@@ -76,7 +76,7 @@
     <!-- Reply section -->
     <div class="reply-section">
       <div class="reply-header">
-        <h3 class="reply-title">Schrijf eigen antwoord</h3>
+        <h3 class="reply-title">Write your own answer</h3>
         <i class="fas fa-pen reply-icon"></i>
       </div>
 
@@ -84,19 +84,19 @@
         class="reply-textarea"
         [(ngModel)]="replyText"
         (input)="onReplyTextChange()"
-        placeholder="Typ hier uw eigen antwoord of bewerk een AI-suggestie..."
+        placeholder="Type your own answer here or edit an AI suggestion..."
         (keydown.enter)="onKeyDownEnter($event)">
       </textarea>
 
       <div class="reply-footer">
-        <div class="character-count">{{ replyText.length }} karakters</div>
+        <div class="character-count">{{ replyText.length }} characters</div>
         <div class="reply-actions">
           <button class="btn btn-secondary" (click)="onDiscardReply()" [disabled]="!replyText.trim() && !selectedAiAnswerText">
-            Wissen
+            Clear
           </button>
           <button class="btn btn-primary" (click)="onSendReply()" [disabled]="!replyText.trim() && !selectedAiAnswerText">
             <i class="fas fa-paper-plane send-icon"></i>
-            Verstuur antwoord
+            Send reply
           </button>
         </div>
       </div>

@@ -14,17 +14,17 @@
       </a>
       <a href="#" class="nav-item">
         <i class="fas fa-paper-plane icon"></i>
-        <span class="label">Verzonden</span>
+        <span class="label">Sent</span>
       </a>
       <a href="#" class="nav-item">
         <i class="fas fa-cog icon"></i>
-        <span class="label">Instellingen</span>
+        <span class="label">Settings</span>
       </a>
     </nav>
 
     <div class="sidebar-footer">
       <div class="company-info">
-        <p class="company-label">Bedrijf:</p>
+        <p class="company-label">Company:</p>
         <p class="company-name">Kapper Katrien</p>
       </div>
     </div>
@@ -50,16 +50,16 @@
           <input
             type="text"
             class="search-input"
-            placeholder="Zoek berichten..."
+            placeholder="Search messages..."
             [(ngModel)]="searchQuery"
             (input)="onSearchChange(searchQuery)" />
           <select
             class="filter-select"
             [(ngModel)]="filterOption"
             (change)="onFilterChange(filterOption)">
-            <option>Alle berichten</option>
-            <option>Ongelezen</option>
-            <option>Gelezen</option>
+            <option>All messages</option>
+            <option>Unread</option>
+            <option>Read</option>
           </select>
         </div>
       </header>
@@ -81,7 +81,7 @@
             <p class="sender-email">{{ msg.senderEmail }}</p>
             <p class="message-text">{{ msg.messageText }}</p>
             <div class="message-meta">
-              <span class="status-badge" [class.new]="msg.status === 'Nieuw'" [class.read]="msg.status === 'Gelezen'">
+              <span class="status-badge" [class.new]="msg.status === 'New'" [class.read]="msg.status === 'Read'">
                 {{ msg.status }}
               </span>
               <span class="time-badge"><i class="fas fa-clock"></i> {{ msg.time }}</span>
